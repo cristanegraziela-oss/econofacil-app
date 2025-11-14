@@ -39,9 +39,7 @@ with st.sidebar:
 
     st.header("💬 **Entre em Contato**")
     if st.button("📱 WhatsApp Business"):
-        st.markdown("   if st.button("📱 WhatsApp Business"):
-       st.markdown("[Fale comigo no WhatsApp](https://wa.me/5511967273149?text=Olá!%20Testei%20o%20EconoFácil%20e%20gostei%20muito!%20Quero%20saber%20mais%20sobre%20o%20plano%20Pro.)", unsafe_allow_html=True)
-)
+        st.markdown("[Fale comigo no WhatsApp](https://wa.me/5511967273149?text=Olá!%20Testei%20o%20EconoFácil%20e%20gostei%20muito!)", unsafe_allow_html=True)
 
     st.info("Desenvolvido por Cristiane Graziela")
 
@@ -331,10 +329,11 @@ st.markdown("---")
 st.markdown("""
 <div style='text-align: center; color: #666;'>
     <p><strong>EconoFácil</strong> - Descomplicando a Grana | 
-    Cristiane Graziela | 
+    Cristiane Graziela | Anhembi Morumbi</p>
     <p>📧 descomplicandoconsutoria@gmail.com | 📱 (11) 96727-3149</p>
 </div>
 """, unsafe_allow_html=True)
+
 
 
 
