@@ -37,8 +37,11 @@ with st.sidebar:
     st.write("**Pro**: R$29/mês - Relatórios completos")
     st.write("**Business**: R$299/mês - Consultoria")
 
-    if st.button("📞 **Falar com Consultor**"):
-        st.info("contato@econofacil.com.br")
+    st.header("💬 **Entre em Contato**")
+    if st.button("📱 WhatsApp Business"):
+        st.markdown("[Fale comigo no WhatsApp](https://wa.me/551196727-3149)", unsafe_allow_html=True)
+
+    st.info("Desenvolvido por Cristiane Graziela")
 
 # ============================================================================
 # PASSO 1: UPLOAD DE DADOS
@@ -264,7 +267,9 @@ METODOLOGIA:
 • Correção de autocorrelação AR(1)
 • Transformação logarítmica
 
-www.econofacil.com.br
+Desenvolvido por Cristiane Graziela
+Ciências Econômicas - Anhembi Morumbi
+contato@econofacil.com.br
 """
 
         st.download_button(
@@ -303,12 +308,30 @@ else:
     • Gráficos interativos
     """)
 
+# ============================================================================
+# FORMULÁRIO DE INTERESSE
+# ============================================================================
+st.markdown("---")
+st.header("🚀 **Interessado no Plano Pro?**")
+
+nome = st.text_input("Seu nome:")
+email = st.text_input("Seu email:")
+
+if st.button("Quero ser notificado do lançamento Pro!"):
+    if nome and email:
+        st.balloons()
+        st.success(f"Obrigada, {nome}! Você receberá acesso exclusivo ao Plano Pro por R$19 no 1º mês!")
+    else:
+        st.warning("Por favor, preencha nome e email.")
+
 # Footer
 st.markdown("---")
 st.markdown("""
 <div style='text-align: center; color: #666;'>
     <p><strong>EconoFácil</strong> - Descomplicando a Grana | 
     Cristiane Graziela | Anhembi Morumbi</p>
-    <p>📧 contato@econofacil.com.br</p>
+    <p>📧 descomplicandoconsutoria@gmail.com | 📱 (11) 96727-3149</p>
 </div>
 """, unsafe_allow_html=True)
+
+
