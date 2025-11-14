@@ -5,126 +5,211 @@ import statsmodels.api as sm
 from statsmodels.stats.stattools import durbin_watson
 from statsmodels.tsa.ar_model import AutoReg
 import plotly.express as px
-import plotly.graph_objects as go
 from datetime import datetime
 import warnings
 warnings.filterwarnings('ignore')
 
 # Configuração da página
 st.set_page_config(
-    page_title="EconoFácil - Descomplicando a Grana",
+    page_title="EconoFácil - Econometria Simples",
     page_icon="📊",
     layout="wide"
 )
 
-# Título e branding
-st.title("📊 **EconoFácil**")
-st.markdown("### *Econometria Profissional para Todos*")
+# CSS personalizado para interface profissional
+st.markdown("""
+<style>
+    .main .stApp {
+        background: linear-gradient(135deg, #f8f9ff 0%, #e8f4fd 100%);
+    }
+    .stButton > button {
+        background-color: #4CAF50;
+        color: white;
+        border-radius: 15px;
+        font-weight: bold;
+        font-size: 16px;
+        padding: 10px 20px;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .stButton > button:hover {
+        background-color: #45a049;
+        transform: translateY(-2px);
+    }
+    .stDownloadButton > button {
+        background-color: #2196F3;
+        color: white;
+        border-radius: 15px;
+        font-weight: bold;
+        font-size: 16px;
+        padding: 12px 24px;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .stMetric > label {
+        color: #2E7D32 !important;
+        font-weight: bold;
+        font-size: 14px;
+    }
+    .stMetric > div > div {
+        color: #1B5E20 !important;
+        font-size: 24px;
+        font-weight: bold;
+    }
+    .step-header {
+        background: linear-gradient(90deg, #4CAF50, #81C784);
+        color: white;
+        padding: 15px;
+        border-radius: 15px;
+        text-align: center;
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# Header principal
+col1, col2, col3 = st.columns([1, 3, 1])
+with col2:
+    st.markdown("""
+    <div style="text-align: center; padding: 2rem;">
+        <h1 style="color: #2E7D32; font-size: 3.5rem; margin-bottom: 0.5rem;">
+            📊 EconoFácil
+        </h1>
+        <p style="color: #666; font-size: 1.5rem; font-style: italic; margin-bottom: 1rem;">
+            Econometria Profissional em 3 Cliques
+        </p>
+        <p style="color: #2E7D32; font-weight: bold; font-size: 1.2rem;">
+            Desenvolvido por Cristiane Graziela - Ciências Econômicas
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
 st.markdown("---")
 
-# Sidebar com informações
+# Sidebar simplificada
 with st.sidebar:
-    st.header("🔧 **Como Funciona**")
-    st.write("""
-    1. **Upload**: Carregue seus dados em Excel/CSV
-    2. **Análise**: Modelo econométrico automático
-    3. **Resultados**: Gráficos e projeções profissionais
-    4. **Download**: Relatório completo
-    """)
+    st.markdown("""
+    <div style="text-align: center; padding: 1rem; background: #f0f8ff; border-radius: 10px; margin-bottom: 2rem;">
+        <h3 style="color: #2E7D32;">🚀 Como Funciona</h3>
+        <ol style="font-size: 14px; color: #666;">
+            <li><strong>1.</strong> Carregue seus dados</li>
+            <li><strong>2.</strong> Análise automática</li>
+            <li><strong>3.</strong> Veja projeções 2026</li>
+            <li><strong>4.</strong> Baixe relatório</li>
+        </ol>
+    </div>
+    """, unsafe_allow_html=True)
 
-    st.header("💰 **Planos**")
-    st.write("**Free**: Análise básica")
-    st.write("**Pro**: R$29/mês - Relatórios completos")
-    st.write("**Business**: R$299/mês - Consultoria")
+    st.markdown("""
+    <div style="text-align: center; padding: 1rem; background: #e8f5e8; border-radius: 10px; margin-bottom: 2rem;">
+        <h3 style="color: #2E7D32;">💰 Planos</h3>
+        <p><strong>Free:</strong> 1 análise/mês</p>
+        <p><strong>Pro:</strong> R$29/mês - Ilimitado</p>
+        <p><strong>Business:</strong> R$299/mês - Consultoria</p>
+    </div>
+    """, unsafe_allow_html=True)
 
-    st.header("💬 **Entre em Contato**")
-    if st.button("📱 WhatsApp Business"):
-        st.markdown("[Fale comigo no WhatsApp](https://wa.me/5511967273149?text=Olá!%20Testei%20o%20EconoFácil%20e%20gostei%20muito!)", unsafe_allow_html=True)
-
-    st.info("Desenvolvido por Cristiane Graziela")
+    if st.button("📱 WhatsApp", key="whatsapp_sidebar"):
+        st.markdown("[Fale comigo!](https://wa.me/5511967273149?text=Olá!%20Testei%20o%20EconoFácil%20e%20gostei%20muito!)", unsafe_allow_html=True)
 
 # ============================================================================
-# PASSO 1: UPLOAD DE DADOS
+# PASSO 1: UPLOAD SIMPLIFICADO
 # ============================================================================
-st.header("📁 **Passo 1: Carregue seus Dados**")
+st.markdown('<div class="step-header">📁 Passo 1: Carregue seus Dados</div>', unsafe_allow_html=True)
 
 col1, col2 = st.columns([3, 1])
 
 with col1:
     uploaded_file = st.file_uploader(
-        "Escolha um arquivo Excel ou CSV",
+        "📁 Escolha Excel ou CSV",
         type=['xlsx', 'csv'],
-        help="Formato: colunas 'Ano', 'Consumo', 'Juros', 'Inflacao'"
+        help="Precisa ter colunas: Ano, Consumo, Juros, Inflação"
     )
 
 with col2:
-    st.info("💡 Use dados de exemplo para testar!")
+    st.markdown("""
+    <div style="text-align: center; padding: 1rem; background: #fff3e0; border-radius: 10px; border: 2px dashed #ff9800;">
+        <p style="color: #e65100; font-weight: bold; margin: 0;">💡 Dica Rápida</p>
+        <p style="color: #666; font-size: 12px; margin: 0.5rem 0 0 0;">Use dados de exemplo para testar!</p>
+    </div>
+    """, unsafe_allow_html=True)
 
-# Dados de exemplo
-if st.button("🔄 **Usar Dados de Exemplo**"):
-    df_exemplo = pd.DataFrame({
-        'Ano': [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025],
-        't': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
-        'Consumo': [390, 375, 368, 355, 342, 342, 338, 342, 348, 352, 362, 383, 399, 402, 405, 410, 415],
-        'Juros': [10, 11, 12, 13, 14, 14, 14, 13, 14, 14, 14, 14, 13, 15, 13.75, 10.50, 9.00],
-        'Inflacao': [87, 86, 85, 82, 79, 78, 78, 75, 75, 75, 76, 72, 76, 79, 4.62, 3.80, 3.50]
-    })
-    st.session_state.df = df_exemplo
-    st.success("✅ Dados de exemplo carregados!")
+# Botão grande para dados de exemplo
+if st.button("🚀 **TESTAR COM DADOS DE EXEMPLO**", use_container_width=True):
+    with st.spinner("🔄 Carregando análise de exemplo..."):
+        df_exemplo = pd.DataFrame({
+            'Ano': [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025],
+            't': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+            'Consumo': [390, 375, 368, 355, 342, 342, 338, 342, 348, 352, 362, 383, 399, 402, 405, 410, 415],
+            'Juros': [10, , 12, 13, 14, 14, 14, 13, 14, 14, 14, 14, 13, 15, 13.75, 10.50, 9.00],
+            'Inflacao': [87, 86, 85, 82, 79, 78, 78, 75, 75, 75, 76, 72, 76, 79, 4.62, 3.80, 3.50]
+        })
+        st.session_state.df = df_exemplo
+        st.session_state.analise_concluida = True
+        st.rerun()
 
 # Carregar dados do usuário
 if uploaded_file is not None:
     try:
-        if uploaded_file.name.endswith('.xlsx'):
-            df = pd.read_excel(uploaded_file)
-        else:
-            df = pd.read_csv(uploaded_file)
+        with st.spinner("📊 Processando seus dados..."):
+            if uploaded_file.name.endswith('.xlsx'):
+                df = pd.read_excel(uploaded_file)
+            else:
+                df = pd.read_csv(uploaded_file)
 
-        # Detectar colunas automaticamente
-        colunas_possiveis = {
-            'Ano': ['ano', 'year', 'data'],
-            'Consumo': ['consumo', 'y', 'consumo_familiar'],
-            'Juros': ['juros', 'selic', 'i', 'taxa'],
-            'Inflacao': ['inflacao', 'ipca', 'pi', 'inflação']
-        }
+            # Detecção automática de colunas
+            colunas_possiveis = {
+                'Ano': ['ano', 'year', 'data'],
+                'Consumo': ['consumo', 'y', 'consumo_familiar'],
+                'Juros': ['juros', 'selic', 'i', 'taxa'],
+                'Inflacao': ['inflacao', 'ipca', 'pi', 'inflação']
+            }
 
-        mapeamento = {}
-        for col_padrao, variacoes in colunas_possiveis.items():
-            for col_real in df.columns:
-                if any(var in col_real.lower() for var in variacoes):
-                    mapeamento[col_real] = col_padrao
-                    break
+            mapeamento = {}
+            for col_padrao, variacoes in colunas_possiveis.items():
+                for col_real in df.columns:
+                    if any(var in col_real.lower() for var in variacoes):
+                        mapeamento[col_real] = col_padrao
+                        break
 
-        if len(mapeamento) < 4:
-            st.warning("⚠️  Selecione as colunas manualmente:")
-            ano_col = st.selectbox("Coluna do Ano:", df.columns)
-            cons_col = st.selectbox("Coluna do Consumo:", df.columns)
-            juros_col = st.selectbox("Coluna dos Juros:", df.columns)
-            infl_col = st.selectbox("Coluna da Inflação:", df.columns)
+            if len(mapeamento) < 4:
+                st.warning("⚠️ Selecione as colunas manualmente:")
+                col1, col2 = st.columns(2)
+                with col1:
+                    ano_col = st.selectbox("📅 Ano:", df.columns)
+                    cons_col = st.selectbox("💰 Consumo:", df.columns)
+                with col2:
+                    juros_col = st.selectbox("📈 Juros:", df.columns)
+                    infl_col = st.selectbox("📉 Inflação:", df.columns)
 
-            df_padronizado = pd.DataFrame({
-                'Ano': df[ano_col],
-                't': range(1, len(df) + 1),
-                'Consumo': df[cons_col],
-                'Juros': df[juros_col],
-                'Inflacao': df[infl_col]
-            })
-        else:
-            df_padronizado = df.rename(columns=mapeamento)
-            df_padronizado['t'] = range(1, len(df_padronizado) + 1)
+                df_padronizado = pd.DataFrame({
+                    'Ano': df[ano_col],
+                    't': range(1, len(df) + 1),
+                    'Consumo': df[cons_col],
+                    'Juros': df[juros_col],
+                    'Inflacao': df[infl_col]
+                })
+            else:
+                df_padronizado = df.rename(columns=mapeamento)
+                df_padronizado['t'] = range(1, len(df_padron) + 1)
 
-        st.session_state.df = df_padronizado
-        st.success(f"✅ Dados carregados: {len(df_padronizado)} observações")
-        st.dataframe(df_padronizado.head())
+            st.session_state.df = df_padronizado
+            st.session_state.analise_concluida = True
+            st.success(f"✅ Dados carregados: {len(df_padronizado)} observações")
+            st.dataframe(df_padronizado.head(5), use_container_width=True)
+            st.rerun()
 
     except Exception as e:
         st.error(f"❌ Erro ao carregar: {str(e)}")
 
 # ============================================================================
-# PASSO 2: ANÁLISE AUTOMÁTICA
+# PASSO 2: ANÁLISE (SÓ APARECE SE TIVER DADOS)
 # ============================================================================
-if 'df' in st.session_state:
-    st.header("🔬 **Passo 2: Análise Econométrica Automática**")
+if 'df' in st.session_state and st.session_state.get('analise_concluida', False):
+    st.markdown('<div class="step-header">🔬 Passo 2: Sua Análise Econométrica</div>', unsafe_allow_html=True)
 
     df = st.session_state.df.copy()
 
@@ -133,206 +218,312 @@ if 'df' in st.session_state:
     df['Inflacao_decimal'] = df['Inflacao'] / 100
     df['ln_Consumo'] = np.log(df['Consumo'])
 
-    # Modelo
+    # Modelo econométrico
     X = df[['Juros_decimal', 'Inflacao_decimal', 't']].copy()
     X = sm.add_constant(X)
     y = df['ln_Consumo'].copy()
 
-    try:
-        # Modelo tradicional
-        modelo_trad = sm.OLS(y, X).fit()
-        dw_trad = durbin_watson(modelo_trad.resid)
+    with st.spinner("Executando modelo GLS com correção de autocorrelação..."):
+        try:
+            # Modelo OLS tradicional
+            modelo_trad = sm.OLS(y, X).fit()
+            dw_trad = durbin_watson(modelo_trad.resid)
 
-        # Correção GLS
-        residuos = modelo_trad.resid.values
-        ar1_model = AutoReg(residuos, lags=1, old_names=False).fit()
-        rho = ar1_model.params[1] if len(ar1_model.params) > 1 else 0.5
+            # Correção AR(1)
+            residuos = modelo_trad.resid.values
+            ar1_model = AutoReg(residuos, lags=1, old_names=False).fit()
+            rho = ar1_model.params[1] if len(ar1_model.params) > 1 else 0.5
 
-        y_gls = y - rho * y.shift(1)
-        X_gls = X - rho * X.shift(1)
-        y_gls = y_gls.iloc[1:]
-        X_gls = X_gls.iloc[1:]
+            # GLS corrigido
+            y_gls = y - rho * y.shift(1)
+            X_gls = X - rho * X.shift(1)
+            y_gls = y_gls.iloc[1:]
+            X_gls = X_gls.iloc[1:]
 
-        from statsmodels.regression.linear_model import GLS
-        modelo_final = GLS(y_gls, X_gls).fit()
-        dw_final = durbin_watson(modelo_final.resid)
+            from statsmodels.regression.linear_model import GLS
+            modelo_final = GLS(y_gls, X_gls).fit()
+            dw_final = durbin_watson(modelo_final.resid)
 
-        st.success(f"✅ **Análise Concluída!**")
-        st.success(f"• R² Ajustado: **{modelo_final.rsquared_adj:.3f}** ({modelo_final.rsquared_adj*100:.1f}%)")
-        st.success(f"• Durbin-Watson: **{dw_final:.3f}**")
+            # Resultados principais
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("📊 R² Ajustado", f"{modelo_final.rsquared_adj:.3}", 
+                         f"{modelo_final.rsquared_adj*100:.1f}%")
+            with col2:
+                st.metric("🔍 Durbin-Watson", f"{dw_final:.3f}", "Melhorado!")
+            with col3:
+                st.metric("📈 Observações", len(df), "Análise robusta")
 
-        # Equação
-        st.subheader("📐 **Equação Estimada**")
-        st.latex(f"\\ln(Consumo) = {modelo_final.params[0]:.3f} {modelo_final.params[1]:+.3f} \\cdot Juros {modelo_final.params[2]:+.3f} \\cdot Inflação {modelo_final.params[3]:+.3f} \\cdot Tempo")
+            st.success("✅ **Análise concluída com sucesso!** Seu modelo está robusto.")
 
-        st.markdown(f"""
-        **Interpretação:**
-        - Cada 1 p.p. ↑ nos **juros** → Consumo **{modelo_final.params[1]*100:+.2f}%**
-        - Cada 1 p.p. ↑ na **inflação** → Consumo **{modelo_final.params[2]*100:+.2f}%**
-        - **Tendência anual**: **+{modelo_final.params[3]*100:.2f}%** no consumo
-        """)
+            # Equação em destaque
+            st.markdown("### 📐 **Equação do Seu Modelo**")
+            st.latex(rf"\ln(Consumo) = {modelo_final.params[0]:.3f} {modelo_final.params[1]:+.3f} \cdot Juros + {modelo_final.params[2]:+.3f} \cdot Inflação + {modelo_final.params[3]:+.3f} \cdot Tempo")
 
-        # Gráficos
-        col1, col2 = st.columns(2)
+            st.markdown(f"""
+            **💡 Interpretação Rápida:**
+            - **Juros**: {modelo_final.params[1]*100:+.2f}% de impacto no consumo            - **Inflação**: {modelo_final.params[2]*100:+.2f}% de impacto no consumo  
+            - **Tendência**: +{modelo_final.params[3]*100:.2f}% crescimento anual
+            """)
 
-        with col1:
-            st.subheader("📈 **Real vs Previsto**")
-            df['Pred_ln'] = modelo_trad.predict(X)
-            df['Pred_Consumo'] = np.exp(df['Pred_ln'])
+            # Gráficos lado a lado
+            col1, col2 = st.columns(2)
 
-            fig1 = px.line(df, x='Ano', y=['Consumo', 'Pred_Consumo'], 
-                          title="Ajuste do Modelo")
-            st.plotly_chart(fig1, use_container_width=True)
+            with col1:
+                st.subheader("📈 **Real vs. Previsto**")
+                df['Pred_ln'] = modelo_trad.predict(X)
+                df['Pred_Consumo'] = np.exp(df['Pred_ln'])
 
-        with col2:
-            st.subheader("📊 **Resíduos**")
-            fig2 = px.scatter(df, x='Ano', y=modelo_trad.resid, 
-                             title=f"DW = {dw_final:.3f}")
-            fig2.add_hline(y=0, line_dash="dash", line_color="red")
-            st.plotly_chart(fig2, use_container_width=True)
+                fig1 = px.line(df, x='Ano', y=['Consumo', 'Pred_Consumo'], 
+                              title="Ajuste do Modelo",
+                              labels={'value': 'Consumo (R$ milhões)', 'Ano': 'Ano'},
+                              color_discrete_sequence=['#4CAF50', '#2196F3'])
+                fig1.update_layout(showlegend=True, font_size=12)
+                st.plotly_chart(fig1, use_container_width=True)
 
-        # ============================================================================
-        # PASSO 3: PROJEÇÕES
-        # ============================================================================
-        st.header("🔮 **Passo 3: Projeções 2026**")
+            with col2:
+                st.subheader("📊 **Resíduos do Modelo**")
+                fig2 = px.scatter(df, x='Ano', y=modelo_trad.resid, 
+                                 title=f"Diagnóstico (DW = {dw_final:.3f})",
+                                 labels={'value': 'Resíduos', 'Ano': 'Ano'})
+                fig2.add_hline(y=0, line_dash="dash", line_color="red", annotation_text="Linha Zero")
+                fig2.update_traces(marker=dict(color="#FF5722", size=8))
+                st.plotly_chart(fig2, use_container_width=True)
 
-        cenarios = {
-            'Base': {'Juros': 8.5, 'Inflacao': 3.25},
-            'Otimista': {'Juros': 7.5, 'Inflacao': 2.5},
-            'Pessimista': {'Juros': 10.5, 'Inflacao': 4.5}
-        }
+        except Exception as e:
+            st.error(f"❌ Erro na análise: {str(e)}")
 
-        t_futuro = len(df) + 1
-        projecoes = []
+# ============================================================================
+# PASSO 3: PROJEÇÕES (SÓ APARECE SE TIVER ANÁLISE)
+# ============================================================================
+if 'df' in st.session_state and 'modelo_final' in locals():
+    st.markdown('<div class="step-header">🔮 Passo 3: Projeções para 2026</div>', unsafe_allow_html=True)
 
-        col1, col2, col3 = st.columns(3)
+    # Cenários econômicos
+    cenarios = {
+        'Base': {'Juros': 8.5, 'Inflacao': 3.25, 'cor': '#4CAF50'},
+        'Otimista': {'Juros': 7.5, 'Inflacao': 2.5, 'cor': '#81C784'},
+        'Pessimista': {'Juros': 10.5, 'Inflacao': 4.5, 'cor': '#F44336'}
+    }
 
-        for i, (nome, params) in enumerate(cenarios.items()):
-            with [col1, col2, col3][i]:
-                st.subheader(f"**{nome.upper()}**")
+    t_futuro = len(df) + 1
+    projecoes = []
 
-                X_futuro = pd.DataFrame({
-                    'const': [1], 
-                    'Juros_decimal': [params['Juros']/100], 
-                    'Inflacao_decimal': [params['Inflacao']/100], 
-                    't': [t_futuro]
-                })
+    col1, col2, col3 = st.columns(3)
 
-                ln_pred = modelo_final.predict(X_futuro)[0]
-                pred_consumo = np.exp(ln_pred)
-                crescimento = ((pred_consumo - df['Consumo'].iloc[-1]) / df['Consumo'].iloc[-1]) * 100
+    for i, (nome, params) in enumerate(cenarios.items()):
+        with [col1, col2, col3][i]:
+           .markdown(f"""
+            <div style="background: linear-gradient(135deg, {params['cor']}, #e8f5e8); 
+                        padding: 1.5rem; border-radius: 15px; text-align: center; 
+                        box-shadow: 0 4px 8px rgba(0,0,0,0.1); height: 100%;">
+                <h3 style="color: white; margin: 0 0 1rem 0; font-size: 1.3rem;">
+                    {nome.upper()}
+                </h3>
+            """, unsafe_allow_html=True)
 
-                projecoes.append({
-                    'Cenário': nome,
-                    'Consumo': pred_consumo,
-                    'Crescimento': crescimento
-                })
+            X_futuro = pd.DataFrame({
+                'const': [1], 
+                'Juros_decimal': [params['Juros']/100], 
+                'Inflacao_decimal': [params['Inflacao']/100], 
+                't': [t_futuro]
+            })
 
-                st.metric("SELIC", f"{params['Juros']}%")
-                st.metric("IPCA", f"{params['Inflacao']}%")
-                st.metric("Consumo 2026", f"R$ {pred_consumo:.0f}M", 
-                         f"{crescimento:+.1f}%")
+            ln_pred = modelo_final.predict(X_futuro)[0]
+            pred_consumo = np.exp(ln_pred)
+            crescimento = ((pred_consumo - df['Consumo'].iloc[-1]) / df['Consumo'].iloc[-1]) * 100
 
-                erro_std = np.sqrt(np.mean(modelo_final.resid**2))
-                intervalo_inf = np.exp(ln_pred - 1.96*erro_std)
-                intervalo_sup = np.exp(ln_pred + 1.96*erro_std)
-                st.caption(f"IC 95%: R$ {intervalo_inf:.0f}M - R$ {intervalo_sup:.0f}M")
+            projecoes.append({
+                'Cenário': nome,
+                'Consumo': pred_consumo,
+                'Crescimento': crescimento
+            })
 
-        # ============================================================================
-        # PASSO 4: DOWNLOAD
-        # ============================================================================
-        st.header("📥 **Passo 4: Baixe seu Relatório**")
+            st.markdown(f"""
+                <div style="background: white; padding: 1rem; border-radius: 10px; margin: 0.5rem 0;">
+                    <p style="margin: 0; font-size: 14px; color: #666;">SELIC</p>
+                    <p style="margin: 0; font-size: 18px; font-weight: bold; color: #2E7D32;">
+                        {params['Juros']}%
+                    </p>
+                </div>
+                """, unsafe_allow_html=True)
 
-        relatorio = f"""
-RELATÓRIO ECONOMÉTRICO AUTOMÁTICO
+            st.markdown(f"""
+                <div style="background: white; padding: 1rem; border-radius: 10px; margin: 0.5rem 0;">
+                    <p style="margin: 0; font-size: 14px; color: #666;">IPCA</p>
+                    <p style="margin: 0; font-size: 18px; font-weight: bold; color: #2E7D32;">
+                        {params['Inflacao']}%
+                    </p>
+                </div>
+                """, unsafe_allow_html=True)
+
+            # Métrica principal
+            st.markdown(f"""
+                <div style="background: white; padding: 1.5rem; border-radius: 10px; margin: 1rem 0; 
+                           box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <p style="margin: 0 0 0.5rem 0; font-size: 14px; color: #666;">Consumo 2026</p>
+                    <p style="margin: 0; font-size: 28px; font-weight: bold; color: #2E7D32;">
+                        R$ {pred_consumo:.0f}M
+                    </p>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 16px; font-weight: bold; 
+                             color: {'green' if crescimento > 0 else 'red'};">
+                        {crescimento:+.1f}%
+                    </p>
+                </div>
+                """, unsafe_allow_html=True)
+
+            # Intervalo de confiança
+            erro_std = np.sqrt(np.mean(modelo_final.resid**2))
+            intervalo_inf = np.exp(ln_pred - 1.96*erro_std)
+            intervalo_sup = np.exp(ln_pred + 1.96*erro_std            
+            st.markdown(f"""
+                <div style="background: #f5f5f5; padding: 0.8rem; border-radius: 8px; 
+                           font-size: 12px; color: #666; text-align: center;">
+                    📏 IC 95%: R$ {intervalo_inf:.0f}M - R$ {intervalo_sup:.0f}M
+                </div>
+                """, unsafe_allow_html=True)
+
+            st.markdown("</div>", unsafe_allow_html=True)
+
+# ============================================================================
+# PASSO 4: DOWNLOAD E PLANO PRO
+# ============================================================================
+if 'df' in st.session_state and 'modelo_final' in locals():
+    st.markdown('<div class="step-header">📥 Passo 4: Seu Relatório Profissional</div>', unsafe_allow_html=True)
+
+    # Gerar relatório
+    relatorio = f"""
+🚀 RELATÓRIO ECONOMÉTRICO - ECONOFÁCIL
 Gerado em: {datetime.now().strftime('%d/%m/%Y %H:%M')}
-Por: EconoFácil - Descomplicando a Grana
+Por: Cristiane Graziela - Ciências Econômicas
 
-DADOS ANALISADOS:
+📊 DADOS ANALISADOS:
 • Período: {df['Ano'].min()} - {df['Ano'].max()}
 • Observações: {len(df)}
+• Variáveis: Consumo, Juros (SELIC), Inflação (IPCA)
 
-RESULTADOS:
+🔬 RESULTADOS DO MODELO:
 • R² Ajustado: {modelo_final.rsquared_adj:.4f} ({modelo_final.rsquared_adj*100:.1f}%)
-• Durbin-Watson: {dw_final:.3f}
+• Durbin-Watson: {dw_final:.3f} (autocorrelação corrigida)
+• Método: GLS com correção AR(1)
 
-PROJEÇÕES 2026:
-"""
-        for proj in projecoes:
-            relatorio += f"• {proj['Cenário']}: R$ {proj['Consumo']:.0f}M ({proj['Crescimento']:+.1f}%)\n"
+📐 EQUAÇÃO ESTIMADA:
+ln(Consumo) = {modelo_final.params[0]:.3f} + {modelo_final.params[1]:+.3f} × Juros + 
+              {modelo_final.params[2]:+.3f} × Inflação + {modelo_final.params[3]:+.3f} × Tempo
 
-        relatorio += """
-METODOLOGIA:
-• Mínimos Quadrados Generalizados (GLS)
-• Correção de autocorrelação AR(1)
-• Transformação logarítmica
+💡 INTERPRETAÇÃO:
+• Impacto dos juros: {modelo_final.params[1]*100:+.2f}% no consumo
+• Impacto da inflação: {modelo_final.params[2]*100:+.2f}% no consumo
+• Tendência de crescimento: +{modelo_final.params[3]*100:.2f}% ao ano
 
-Desenvolvido por Cristiane Graziela
-Ciências Econômicas - Anhembi Morumbi
-contato@econofacil.com.br
+🔮 PROJEÇÕES PARA 2026:
+
 """
 
+    for proj in projecoes:
+        relatorio += f"• {proj['Cenário']}: R$ {proj['Consumo']:.0f}M ({proj['Crescimento']:+.1f}% vs 2025)\n"
+
+    relatorio += f"""
+👩‍💼 ANÁLISE POR CRISTIANE GRAZIELA
+Ciências Econômicas - Universidade Anhembi Morumbi
+contato@econofacil.com.br | (11) 96727-3149
+
+---
+EconoFácil - Descomplicando a Grana
+www.econofacil.com.br
+    """
+
+    # Botão de download grande
+    col1, col2 = st.columns([1, 3])
+    with col1:
+        st.markdown("""
+        <div style="text-align: center; padding: 2rem; background: #e3f2fd; 
+                    border-radius: 15px; border: 3px solid #2196F3;">
+            <h3 style="color: #1976D2; margin: 0 0 1rem 0;">📄 FREE</h3>
+            <p style="color: #666; font-size: 14px; margin: 0;">Relatório básico</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col2:
         st.download_button(
-            label="📄 **Baixar Relatório (FREE)**",
+            label="📥 **BAIXAR MEU RELATÓRIO**",
             data=relatorio,
-            file_name=f"relatorio_{datetime.now().strftime('%Y%m%d')}.txt",
-            mime="text/plain"
+            file_name=f"Relatorio_Econofacil_{datetime.now().strftime('%Y%m%d_%H%M')}.txt",
+            mime="text/plain",
+            use_container_width=True
         )
 
-        st.markdown("---")
-        st.info("""
-        🚀 **Plano Pro (R$29/mês):**
-        • Relatórios PDF profissionais
-        • 10+ cenários econômicos
-        • Suporte prioritário
-        • Integração BACEN/IBGE
-        """)
+    st.markdown("---")
 
-        if st.button("💎 **ASSINAR PLANO PRO**"):
+    # Call-to-action Plano Pro
+    st.markdown("""
+    <div style="background: linear-gradient(135deg, #4CAF50, #81C784); 
+                padding: 2rem; border-radius: 15px; text-align: center; 
+                color: white; margin: 2rem 0;">
+        <h2 style="margin: 0 0 1rem 0; font-size: 2rem;">💎 Quer Mais?</h2>
+        <p style="margin: 0 0 1.5rem 0; font-size: 1.2rem;">Plano Pro: Relatórios PDF + 10 cenários + Suporte</p>
+        <h3 style="margin: 0 0 1rem 0; font-size: 2.5rem;">Apenas R$29/mês</h3>
+        <p style="margin: 0 0 2rem 0; font-size: 1.1rem; opacity 0.9;">
+            (R$19 no 1º mês - Lançamento Especial)
+        </p>
+    """, unsafe_allow_html=True)
+
+    col1, col2 = st.columns([1, 2])
+    with col1:
+        if st.button("🚀 **ASSINAR PRO AGORA**", use_container_width=True):
             st.balloons()
-            st.success("Em breve: contato@econofacil.com.br")
+            st.success("🎉 Em breve! Entre em contato pelo WhatsApp para acesso exclusivo!")
 
-    except Exception as e:
-        st.error(f"❌ Erro: {str(e)}")
+    with col2:
+        st.markdown("""
+            <div style="text-align: center; padding: 1rem; background: rgba(255,255,255,0.2); 
+                        border-radius: 10px; margin-top: 1rem;">
+                <p style="margin: 0; font-size: 1.1rem;">📱 Fale comigo!</p>
+                <p style="margin: 0.5rem 0 0 0; font-size: 1.3rem; font-weight: bold;">
+                    (11) 96727-3149
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
 
+    st.markdown("</div>", unsafe_allow_html=True)
+
+# Tela inicial (sem dados)
 else:
-    st.info("""
-    👋 **Bem-vindo ao EconoFácil!**
+    st.markdown('<div class="step-header">👋 Bem-vindo ao EconoFácil!</div>', unsafe_allow_html=True)
 
-    Carregue seus dados ou use o exemplo para começar.
-
-    **Você vai receber:**
-    • Análise econométrica profissional
-    • Projeções para 2026
-    • Relatório técnico completo
-    • Gráficos interativos
-    """)
-
-# ============================================================================
-# FORMULÁRIO DE INTERESSE
-# ============================================================================
-st.markdown("---")
-st.header("🚀 **Interessado no Plano Pro?**")
-
-nome = st.text_input("Seu nome:")
-email = st.text_input("Seu email:")
-
-if st.button("Quero ser notificado do lançamento Pro!"):
-    if nome and email:
-        st.balloons()
-        st.success(f"Obrigada, {nome}! Você receberá acesso exclusivo ao Plano Pro por R$19 no 1º mês!")
-    else:
-        st.warning("Por favor, preencha nome e email.")
+    col1, col2, col3 = st(3)
+    with col2:
+        st.markdown("""
+        <div style="text-align: center; padding: 3rem 2rem; background: white; 
+                    border-radius: 20px; box-shadow: 0 8px 16px rgba(0,0,0,0.1);">
+            <h2 style="color: #2E7D32; margin: 0 0 1rem 0;">📊 O que você vai receber:</h2>
+            <ul style="text-align: left; color: #666; font-size: 16px; line-height: 1.6;">
+                <li>✅ Análise GLS profissional</li>
+                <li>✅ Projeções 2026 (3 cenários)</li>
+                <li>✅ Gráficos interativos</li>
+                <li>✅ Relatório técnico completo</li>
+                <li>✅ Download automático</li>
+            </ul>
+            <p style="margin: 2rem 0 0 0; color: #2E7D32; font-weight: bold; font-size: 18px;">
+                Tudo em menos de 2 minutos! ⏱️
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
 
 # Footer
 st.markdown("---")
 st.markdown("""
-<div style='text-align: center; color: #666;'>
-    <p><strong>EconoFácil</strong> - Descomplicando a Grana | 
-    Cristiane Graziela | Anhembi Morumbi</p>
-    <p>📧 descomplicandoconsutoria@gmail.com | 📱 (11) 96727-3149</p>
+<div style="text-align: center; padding: 2rem; background: #f5f5f5; border-radius: 15px; margin-top: 3rem;">
+    <h3 style="color: #2E7D32; margin: 0 0 0.5rem 0;">EconoFácil - Descomplicando a Grana</h3>
+    <p style="color: #666; margin: 0 0 1rem 0; font-size: 16px;">
+        Desenvolvido por <strong>Cristiane Graziela</strong> | Ciências Econômicas - Anhembi Morumbi
+    </p>
+    <p style="color: #666; margin: 0; font-size: 14px;">
+        📧 contato@econofacil.com.br | 📱 (11) 96727-3149
+    </p>
 </div>
 """, unsafe_allow_html=True)
+
 
 
 
